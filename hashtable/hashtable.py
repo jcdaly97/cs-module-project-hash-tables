@@ -22,7 +22,9 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-
+        self.arr = [None for i in range(capacity)]
+        self.capacity = capacity
+        self.total = 0
 
     def get_num_slots(self):
         """
@@ -35,6 +37,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return len(self.arr)
 
 
     def get_load_factor(self):
@@ -44,7 +47,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.total / self.capacity
 
     def fnv1(self, key):
         """
@@ -63,7 +66,11 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
-
+        hash = 5831
+        bytes = key.encode('utf-8')
+        for byte in bytes:
+            hash = ((hash * 33) ^ byte) % 0x100000000
+        return hash
 
     def hash_index(self, key):
         """
@@ -82,6 +89,24 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        key_hash = self.djb2(key)
+        arr_index = key_hash % self.capacity
+        new = HashTableEntry(key,value)
+        current = self.arr[arr_index]
+        self.total += 1
+        if current:
+            prev = None
+            while current:
+                if current.key == key:
+                    current.value = value
+                    return
+                prev = current
+                current = current.next
+            prev.next = new
+        else:
+            self.arr[arr_index] = new
+
+        
 
 
     def delete(self, key):
@@ -93,6 +118,24 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        key_hash = self.djb2(key)
+        arr_index = key_hash % self.capacity
+        
+        current = self.arr[arr_index]
+
+        if current:
+            prev = None
+            while current:
+                if current.key == key:
+                    if prev:
+                        prev.next = current.next
+                    else:
+                        self.arr[arr_index] = current.next
+                prev = current
+                current = current.next
+        else:
+            print('not found')        
+
 
 
     def get(self, key):
@@ -104,6 +147,16 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        key_hash = self.djb2(key)
+        arr_index = key_hash % self.capacity
+
+        current = self.arr[arr_index]
+        if current:
+            while current:
+                if current.key == key:
+                    return current.value
+                current = current.next
+        return None
 
 
     def resize(self, new_capacity):
@@ -114,10 +167,22 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        copy = self.arr
+        self.capacity = new_capacity
+        self.arr = [None for i in range(new_capacity)]
+        self.count = 0
+        for i in copy:
+            current = i
+            if current.key:
+                while current:
+                    self.put(current.key, current.value)
+                current = current.next
+        
 
 
 
 if __name__ == "__main__":
+    
     ht = HashTable(8)
 
     ht.put("line_1", "'Twas brillig, and the slithy toves")
