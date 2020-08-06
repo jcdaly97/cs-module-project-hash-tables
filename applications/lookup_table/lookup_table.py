@@ -1,6 +1,6 @@
 # Your code here
-
-
+import math
+import random
 def slowfun_too_slow(x, y):
     v = math.pow(x, y)
     v = math.factorial(v)
@@ -9,12 +9,27 @@ def slowfun_too_slow(x, y):
 
     return v
 
+
+cache = {}
+
 def slowfun(x, y):
     """
     Rewrite slowfun_too_slow() in here so that the program produces the same
     output, but completes quickly instead of taking ages to run.
     """
+    
     # Your code here
+    key = f'{x},{y}' 
+    if key not in cache:
+        n = math.pow(x,y)
+        n = math.factorial(n)
+        n //= (x+y)
+        n %= 982451653
+        cache[key] = n
+    return cache[key]
+
+        
+
 
 
 
