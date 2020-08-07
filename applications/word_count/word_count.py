@@ -1,7 +1,22 @@
+
+
 def word_count(s):
-    # Your code here
-
-
+    #make a dictionary
+    count = {}
+    #remove punctuation and make lowercase
+    punc = ''':";,.-+=/\\|[]{}()*^&'''
+    for char in s:
+        if char in punc:
+            s = s.replace(char, "")
+    s = s.lower()
+    #split into a list of words
+    arr = s.split()
+    for i in arr:
+        if i not in count:
+            count[i] = 1
+        else:
+            count[i]+=1
+    return count
 
 if __name__ == "__main__":
     print(word_count(""))

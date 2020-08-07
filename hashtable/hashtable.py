@@ -105,6 +105,8 @@ class HashTable:
             prev.next = new
         else:
             self.arr[arr_index] = new
+        #if self.get_load_factor() > .7:
+        #    self.resize(self.capacity*2)
 
         
 
@@ -176,7 +178,7 @@ class HashTable:
             if current.key:
                 while current:
                     self.put(current.key, current.value)
-                current = current.next
+                    current = current.next
         
 
 
